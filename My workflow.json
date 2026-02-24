@@ -1,0 +1,798 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        -368
+      ],
+      "id": "2a997b63-bba0-4be4-b01d-3edb7670f656",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://data.gov.rs/sr/datasets/r/d2c3585c-aed7-4ce5-90a1-ea6eb96c47bc",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        224,
+        -608
+      ],
+      "id": "5b6cbf26-edba-4d8d-83bc-ef59832e0f14",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseMode": "responseNodes"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        464
+      ],
+      "id": "46dc5298-817d-407c-a841-d7fbd48b4ac1",
+      "name": "When chat message received",
+      "webhookId": "099fc7c7-028d-41e7-9a78-baab300ed751"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/files/lidl.csv",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -608
+      ],
+      "id": "0e98cbcc-7aba-4b16-b99b-698a5f0faf3b",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/files/lidl.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -64
+      ],
+      "id": "8da656e4-a15d-4fc2-a6e2-c9f1d7bb9dca",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "message": "={{$json.output}}",
+        "waitUserReply": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chat",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        144
+      ],
+      "id": "eaae5b97-0580-4c84-8115-e3bddc77a1dc",
+      "name": "Respond to Chat"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When chat message received').item.json.chatInput }}",
+        "options": {
+          "systemMessage": "You are AICenovnik. You work with product prices in Serbia.\n\nStores:\n1) Lidl\n2) Dis\n\nServices:\n1) Top 10 discounts\n2) Average regular price by category\n\nRules:\n- Introduce yourself and show the menu.\n- The user selects by sending \"1, 1\" (store, service).\n- You are only an assistant helping the user; you do not execute."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1120,
+        496
+      ],
+      "id": "98619421-9f47-41ad-a0cc-d1f3ea91618f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        720
+      ],
+      "id": "2826b330-ea44-49a0-9052-b100cd919f93",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "prK7Qf2A968TisDo",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1264,
+        720
+      ],
+      "id": "668cee4d-2c60-476a-a8f1-0f46849359b6",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "content": "## Preuzimanje podataka i smestanje u file system",
+        "height": 576,
+        "width": 832,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -144,
+        -784
+      ],
+      "typeVersion": 1,
+      "id": "c2491b02-5e15-4b1d-87f1-7e3f492cb677",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Chat bot sistem\n",
+        "height": 1008,
+        "width": 1856,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -144,
+        -160
+      ],
+      "typeVersion": 1,
+      "id": "b66b53c4-bc51-45ad-9dc4-8c09652cb761",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ";",
+          "maxRowCount": 100
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        -64
+      ],
+      "id": "6f34565e-3847-4cd6-b00b-c7efbbce1cec",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('When chat message received').item.json.chatInput }}",
+                    "rightValue": "1, ",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    },
+                    "id": "ef5dbfd3-0693-4c14-a356-8bd84ba7bedf"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4f04d101-d9ee-4ab3-8ec5-b01030f80fd2",
+                    "leftValue": "={{ $('When chat message received').item.json.chatInput }}",
+                    "rightValue": "2, ",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        448
+      ],
+      "id": "76c8f913-da93-4dfc-a9ad-6dca982200c5",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "const num = v => {\n  const n = parseFloat(String(v ?? \"\").replace(\",\", \".\"));\n  return Number.isFinite(n) ? n : NaN;\n};\n\nconst rows = $input.all().map(i => i.json);\n\nconst deals = rows\n  .map(r => {\n    const regular = num(r[\"Redovna cena\"]);\n    const sale = num(r[\"Snižena cena\"]);\n\n    if (!(regular > 0) || !(sale > 0) || sale >= regular) return null;\n\n    const pct = ((regular - sale) / regular) * 100;\n\n    return {\n      name: r[\"Naziv proizvoda\"] ?? \"\",\n      brand: r[\"Robna marka\"] ?? \"\",\n      regular,\n      sale,\n      pct,\n      start: r[\"Datum početka sniženja\"] ?? null,\n      end: r[\"Datum kraja sniženja\"] ?? null,\n    };\n  })\n  .filter(Boolean)\n  .sort((a, b) => b.pct - a.pct);\n\nconst top10 = deals.slice(0, 10);\n\nconst output = top10.length\n  ? \"Top 10 discounts:\\n\\n\" +\n    top10\n      .map((d, i) => {\n        const brand = d.brand && d.brand !== \"RM NIJE DEFINISANA\" ? ` | ${d.brand}` : \"\";\n        return `${d.name}${brand} - ${d.sale.toFixed(2)} RSD (was ${d.regular.toFixed(2)}) | -${d.pct.toFixed(1)}%\\n`;\n      })\n      .join(\"\\n\")\n  : \"No discounted items found.\";\n\nreturn [{ json: { output } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        -48
+      ],
+      "id": "f5e8edf6-ab82-4682-a259-4b8d36d1cf4c",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "https://data.gov.rs/sr/datasets/r/844a28cb-9b83-441f-a524-76055b610b73",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        224,
+        -416
+      ],
+      "id": "67927f5b-c671-4688-81b0-12afd91a7bb2",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/files/dis.csv",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        -416
+      ],
+      "id": "f9fcc6b3-8c96-4ad7-9c69-3366fb492298",
+      "name": "Read/Write Files from Disk2"
+    },
+    {
+      "parameters": {
+        "content": "Lidl",
+        "height": 192,
+        "width": 496,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -640
+      ],
+      "id": "10f82843-6afa-4609-ab0d-4897679fbf66",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Dis",
+        "height": 176,
+        "width": 496,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -432
+      ],
+      "id": "7a987cd1-5e60-42e1-8d6b-aedbac5dd113",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/files/dis.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        224
+      ],
+      "id": "9ef86cce-9f3a-439f-9af5-a6413032cb6a",
+      "name": "Read/Write Files from Disk3"
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ";",
+          "maxRowCount": 100
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        224
+      ],
+      "id": "86fea926-44c4-4bfc-8d12-4f272b988917",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "content": "Lidl",
+        "height": 240,
+        "width": 432,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        400,
+        -112
+      ],
+      "typeVersion": 1,
+      "id": "0cb8b261-6255-437b-905b-7a629e973318",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "Dis",
+        "height": 240,
+        "width": 432,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        400,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "7baa3a6b-319b-499a-899e-7ade4aed24c2",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('When chat message received').item.json.chatInput }}",
+                    "rightValue": "1, 1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "3d363114-2525-4612-a9f2-c5caf192f071"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3130a636-49f6-4e1f-a8fc-bb4efb148b4f",
+                    "leftValue": "={{ $('When chat message received').item.json.chatInput }}",
+                    "rightValue": "1, 2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        -80
+      ],
+      "id": "e7bdbbc5-058d-464e-9a17-0ebb5dbbb07a",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('When chat message received').item.json.chatInput }}",
+                    "rightValue": "2, 1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "3d363114-2525-4612-a9f2-c5caf192f071"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "3130a636-49f6-4e1f-a8fc-bb4efb148b4f",
+                    "leftValue": "={{ $('When chat message received').item.json.chatInput }}",
+                    "rightValue": "2, 2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        208
+      ],
+      "id": "18a714ed-bdc2-42aa-815a-bf601a671d58",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const num = v => parseFloat(String(v ?? \"\").replace(\",\", \".\"));\n\nconst rows = $input.all().map(i => i.json);\n\nconst agg = {};\n\nfor (const r of rows) {\n  const cat = String(r[\"NAZIV KATEGORIJE\"] ?? \"NEPOZNATO\").trim();\n  const price = num(r[\"Redovna cena\"]);\n  if (!Number.isFinite(price)) continue;\n\n  if (!agg[cat]) agg[cat] = { sum: 0, count: 0 };\n  agg[cat].sum += price;\n  agg[cat].count += 1;\n}\n\nconst list = Object.entries(agg)\n  .map(([cat, a]) => ({ cat, avg: a.sum / a.count, count: a.count }))\n  .sort((a, b) => b.avg - a.avg);\n\nconst output = list.length\n  ? \"Average regular price by category:\\n\\n\" +\n    list\n      .map(x => `${x.cat}: ${x.avg.toFixed(2)} RSD (items: ${x.count})\\n`)\n      .join(\"\\n\")\n  : \"No valid prices found in the file.\";\n\nreturn [{ json: { output } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        144
+      ],
+      "id": "9f9a6ffb-b880-4e19-bf37-a5721c633d03",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -656
+      ],
+      "id": "ab892cc1-2a25-4cfb-996b-1567b057be5c",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Read/Write Files from Disk3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk3": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "c464a08f-e69e-4600-a1c7-5e2004e06dcb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f7c06556bbe5f35755a565f0c9d8f5a42876b53806266c3de948ff51bbb7f8b1"
+  },
+  "id": "POdde7VGsc8UWdPojKj28",
+  "tags": []
+}

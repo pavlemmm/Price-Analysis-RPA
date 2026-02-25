@@ -1,6 +1,6 @@
-# n8n Price Analysis Automation (Serbia)
+# n8n Price Analysis Automation
 
-Automated workflow built in **n8n** that downloads public product price lists for Serbian retailers, stores them locally, and lets users query insights through a chat-based interface.
+Automated workflow built in **n8n** for practice that downloads public product price lists for Serbian retailers, stores them locally, and lets users query insights through a chat-based interface.
 
 ## Screenshots
 
